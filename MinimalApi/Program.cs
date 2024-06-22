@@ -18,7 +18,8 @@ app.MapPost("todo-items", async (ToDoItem item, ToDoDbContext db) =>
 });
 app.MapPut("/todo-items/{id}", async (int id, ToDoItem item, ToDoDbContext db) =>
 {
-    if (id != item.Id)
+    var todoItem = await db.ToDoItem.FindAsync(id);
+    if (todoItem is null)
     {
         return Results.NotFound();
     }
@@ -26,4 +27,16 @@ app.MapPut("/todo-items/{id}", async (int id, ToDoItem item, ToDoDbContext db) =
     await db.SaveChangesAsync();
     return Results.NoContent();
 });
+app.MapDelete("/todo-items/{id}", async (int id, ToDoDbContext db) =>
+{
+    var item = await db.ToDoItem.FindAsync(id);
+    if (item == null)
+    {
+        return Results.NotFound();
+    }
+    db.ToDoItem.Remove(item);
+    await db.SaveChangesAsync();
+    return Results.NoContent();
+});
+
 app.Run();
