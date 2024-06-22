@@ -23,7 +23,8 @@ app.MapPut("/todo-items/{id}", async (int id, ToDoItem item, ToDoDbContext db) =
     {
         return Results.NotFound();
     }
-    db.ToDoItem.Update(item);
+    todoItem.Task = item.Task;
+    todoItem.IsComplete = item.IsComplete;
     await db.SaveChangesAsync();
     return Results.NoContent();
 });
