@@ -16,5 +16,14 @@ app.MapPost("todo-items", async (ToDoItem item, ToDoDbContext db) =>
     await db.SaveChangesAsync();
     return Results.Created($"/todo-items/{item.Id}", item);
 });
-
+app.MapPut("/todo-items/{id}", async (int id, ToDoItem item, ToDoDbContext db) =>
+{
+    if (id != item.Id)
+    {
+        return Results.NotFound();
+    }
+    db.ToDoItem.Update(item);
+    await db.SaveChangesAsync();
+    return Results.NoContent();
+});
 app.Run();
